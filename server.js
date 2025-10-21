@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 const NotFoundError = require('./errors/NotFoundError');
 const ValidationError = require('./errors/ValidationError');
+const validateProduct = require('./middleware/validateProduct');
 
 // Initialize Express app
 const app = express();
