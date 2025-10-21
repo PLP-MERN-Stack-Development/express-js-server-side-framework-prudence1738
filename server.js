@@ -80,7 +80,6 @@ app.get('/api/products', (req, res) => {
     results: paginatedResults
   });
 });
-});
 
 // GET a specific product by ID
 app.get('/api/products/:id', (req, res, next) => {
@@ -116,19 +115,6 @@ app.post('/api/products', (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
-
-// GET a specific product by ID
-app.get('/api/products/:id', (req, res, next) => {
-  const product = products.find(p => p.id === req.params.id);
-
-  if (!product) {
-    const err = new Error('Product not found');
-    err.status = 404;
-    return next(err);
-  }
-
-  res.json(product);
 });
 
 //  POST create a new product
@@ -180,15 +166,6 @@ app.delete('/api/products/:id', (req, res, next) => {
   }
 });
 
-// Example route implementation for GET /api/products
-app.get('/api/products', (req, res) => {
-  res.json(products);
-});
-
-// TODO: Implement custom middleware for:
-// - Request logging
-// - Authentication
-// - Error handling
 
 //  Product statistics (count by category)
 app.get('/api/products/stats', (req, res) => {
