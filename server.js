@@ -4,6 +4,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
+const NotFoundError = require('./errors/NotFoundError');
+const ValidationError = require('./errors/ValidationError');
 
 // Initialize Express app
 const app = express();
