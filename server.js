@@ -50,9 +50,36 @@ app.get('/', (req, res) => {
 // TODO: Implement the following routes:
 // // -------------------- CRUD ROUTES --------------------
 
-// GET all products
+// GET all products with filtering, pagination, and search
 app.get('/api/products', (req, res) => {
-  res.json(products);
+  let results = [...products]; // clone the products array
+
+  // 🔍 Search by name (case-insensitive)
+  if (req.query.search) {
+    const search = req.query.search.toLowerCase();
+    results = results.filter(p => p.name.toLowerCase().includes(search));
+  }
+
+  // 🏷️ Filter by category
+  if (req.query.category) {
+    results = results.filter(p => p.category === req.query.category.toLowerCase());
+  }
+
+  // 📄 Pagination
+  const page = parseInt(req.query.page) || 1;      // default page 1
+  const limit = parseInt(req.query.limit) || 2;    // default 2 products per page
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  const paginatedResults = results.slice(startIndex, endIndex);
+
+  res.json({
+    page,
+    limit,
+    total: results.length,
+    results: paginatedResults
+  });
+});
 });
 
 // GET a specific product by ID
@@ -89,6 +116,36 @@ app.post('/api/products', (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// GET a specific product by ID
+app.get('/api/products/:id', (req, res, next) => {
+  const product = products.find(p => p.id === req.params.id);
+
+  if (!product) {
+    const err = new Error('Product not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  res.json(product);
+});
+
+//  POST create a new product
+app.post('/api/products', validateProduct, (req, res) => {
+  const { name, description, price, category, inStock } = req.body;
+
+  const newProduct = {
+    id: uuidv4(), // generates unique ID
+    name,
+    description,
+    price,
+    category,
+    inStock
+  };
+
+  products.push(newProduct);
+  res.status(201).json(newProduct);
 });
 
 // PUT update an existing product
@@ -132,6 +189,20 @@ app.get('/api/products', (req, res) => {
 // - Request logging
 // - Authentication
 // - Error handling
+
+//  Product statistics (count by category)
+app.get('/api/products/stats', (req, res) => {
+  const stats = {};
+  products.forEach(p => {
+    const category = p.category.toLowerCase();
+    stats[category] = (stats[category] || 0) + 1;
+  });
+
+  res.json({
+    totalProducts: products.length,
+    countByCategory: stats
+  });
+});
 
 // Import the error handler middleware
 const errorHandler = require('./middleware/errorHandler');
