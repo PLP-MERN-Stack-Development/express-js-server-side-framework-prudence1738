@@ -47,8 +47,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Product API! Go to /api/products to see all products.');
 });
 
-// TODO: Implement the following routes:
-// // -------------------- CRUD ROUTES --------------------
 
 // GET all products with filtering, pagination, and search
 app.get('/api/products', (req, res) => {
@@ -87,31 +85,6 @@ app.get('/api/products/:id', (req, res, next) => {
     const product = products.find(p => p.id === req.params.id);
     if (!product) throw new NotFoundError('Product not found');
     res.json(product);
-  } catch (err) {
-    next(err);
-  }
-});
-
-// POST create a new product
-app.post('/api/products', (req, res, next) => {
-  try {
-    const { name, description, price, category, inStock } = req.body;
-
-    if (!name || !description || price === undefined || !category || inStock === undefined) {
-      throw new ValidationError('All product fields are required');
-    }
-
-    const newProduct = {
-      id: uuidv4(),
-      name,
-      description,
-      price,
-      category,
-      inStock
-    };
-
-    products.push(newProduct);
-    res.status(201).json(newProduct);
   } catch (err) {
     next(err);
   }
