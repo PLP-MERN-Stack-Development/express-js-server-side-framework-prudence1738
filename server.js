@@ -62,6 +62,12 @@ app.get('/api/products', (req, res) => {
 // - Authentication
 // - Error handling
 
+// Import the error handler middleware
+const errorHandler = require('./middleware/errorHandler');
+
+// Use the error handler after all routes
+app.use(errorHandler);
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
