@@ -1,14 +1,10 @@
-// middleware/validateProduct.js
-
-export default (req, res, next) => {
+module.exports = (req, res, next) => {
   const { name, description, price, category, inStock } = req.body;
 
-  // Check for missing required fields
   if (!name || !description || price === undefined || !category || inStock === undefined) {
     return res.status(400).json({ message: 'All product fields are required.' });
   }
 
-  // Validate data types
   if (typeof name !== 'string' || typeof description !== 'string' || typeof category !== 'string') {
     return res.status(400).json({ message: 'Name, description, and category must be strings.' });
   }
